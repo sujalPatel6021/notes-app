@@ -35,7 +35,7 @@ pipeline {
             steps {
                 bat '''
                 if not exist sonar-scanner (
-                  powershell -Command "Invoke-WebRequest -Uri 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-6.0.0.4432-windows-x64.zip' -OutFile sonar-scanner.zip"
+                  powershell -Command "Invoke-WebRequest -Uri \\"https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-6.0.0.4432-windows-x64.zip\\" -OutFile sonar-scanner.zip"
                   powershell -Command "Expand-Archive -Path sonar-scanner.zip -DestinationPath . -Force"
                   ren sonar-scanner-6.0.0.4432-windows-x64 sonar-scanner
                 )
