@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/YOUR_GITHUB_USERNAME/notes-app.git'
+                git branch: 'main', url: 'https://github.com/sujalPatel6021/notes-app.git'
             }
         }
 
