@@ -32,17 +32,11 @@ pipeline {
         }
 
         stage('Code Quality') {
-    steps {
-        bat '''
-        if not exist sonar-scanner (
-          powershell -Command "$ProgressPreference='SilentlyContinue'; [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -UseBasicParsing -Headers @{'User-Agent'='Mozilla/5.0'} -Uri 'https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-6.0.0.4432-windows.zip' -OutFile 'sonar-scanner.zip'"
-          powershell -Command "Expand-Archive -Path 'sonar-scanner.zip' -DestinationPath . -Force"
-          ren sonar-scanner-6.0.0.4432-windows sonar-scanner
-        )
-        sonar-scanner\\bin\\sonar-scanner.bat
-        '''
-    }
-}
+            steps {
+                bat 'C:\\sonar-scanner\\bin\\sonar-scanner.bat'
+            }
+        }
+
         stage('Security Scan') {
             steps {
                 bat 'npm audit || exit /b 0'
