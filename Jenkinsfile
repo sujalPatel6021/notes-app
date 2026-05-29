@@ -32,10 +32,10 @@ pipeline {
         }
 
         stage('Code Quality') {
-            steps {
-                bat 'C:\\sonar-scanner\\bin\\sonar-scanner.bat'
-            }
-        }
+    steps {
+        bat 'C:\\sonar-scanner\\bin-folder\\bin\\sonar-scanner.bat'
+    }
+}
 
         stage('Security Scan') {
             steps {
