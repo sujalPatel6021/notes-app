@@ -31,7 +31,7 @@ pipeline {
             }
         }
 
-        stage('Code Quality') {
+       stage('Code Quality') {
             steps {
                 bat '''
                 if not exist sonar-scanner (
