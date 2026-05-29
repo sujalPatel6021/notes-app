@@ -33,7 +33,7 @@ pipeline {
 
         stage('Code Quality') {
     steps {
-        bat 'C:\\sonar-scanner\\bin-folder\\bin\\sonar-scanner.bat'
+        bat 'C:\\sonar-scanner\\bin-folder\\bin\\sonar-scanner.bat -Dsonar.scanner.skipJreProvisioning=true'
     }
 }
 
