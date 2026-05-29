@@ -1,62 +1,69 @@
 pipeline {
     agent any
 
-    stages {
+    environment {
+        SONAR_TOKEN = credentials('SONAR_TOKEN')
+    }
 
-        stage('Build') {
+    stages {
+        stage('Checkout') {
             steps {
-                echo 'Building Docker Image...'
-                sh 'docker build -t notes-app .'
+                git branch: 'main', url: 'https://github.com/YOUR_USERNAME/notes-app.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running Tests...'
                 sh 'npm test'
+                sh 'npm run coverage'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'docker build -t notes-app:${BUILD_NUMBER} .'
             }
         }
 
         stage('Code Quality') {
             steps {
-                echo 'Code Quality Check with SonarQube'
+                sh '''
+                curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-6.0.0.4432-linux-x64.zip
+                unzip -o sonar-scanner.zip
+                ./sonar-scanner-6.0.0.4432-linux-x64/bin/sonar-scanner
+                '''
             }
         }
 
-        stage('Security') {
+        stage('Security Scan') {
             steps {
-                echo 'Running Security Scan'
-                sh 'docker run --rm aquasec/trivy image notes-app'
+                sh 'npm audit || true'
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy to Staging') {
             steps {
-                echo 'Deploying Application'
-                sh 'docker run -d --name notes-container -p 3000:3000 notes-app || true'
+                sh 'docker compose down || true'
+                sh 'docker compose up --build -d'
             }
         }
 
         stage('Release') {
             steps {
-                echo 'Release Version 1.0'
+                sh 'docker tag notes-app:${BUILD_NUMBER} notes-app:latest'
             }
         }
 
-        stage('Monitoring') {
+        stage('Monitoring Check') {
             steps {
-                echo 'Monitoring Enabled'
+                sh 'curl -f http://localhost:3000/health'
             }
-        }
-    }
-
-    post {
-        success {
-            echo 'Pipeline completed successfully!'
-        }
-
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
